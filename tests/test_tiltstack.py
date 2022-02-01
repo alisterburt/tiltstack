@@ -2,6 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from tiltstack.io_utils import read_mrc
 from tiltstack.tiltstack import stack_tilt_series, tiltstack_relion
@@ -19,6 +20,7 @@ def test_stack(tilt_series_mdoc_file, tilt_image_files):
     assert np.allclose(tilt_series[20], read_mrc(tilt_image_files[0]))
 
 
+@pytest.mark.filterwarnings('ignore::DeprecationWarning')
 def test_tiltstack_relion(
     motioncor_output, tilt_series_mdoc_file, tmpdir, tilt_image_files
 ):
