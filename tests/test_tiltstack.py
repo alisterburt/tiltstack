@@ -20,7 +20,6 @@ def test_stack(tilt_series_mdoc_file, tilt_image_files):
     assert np.allclose(tilt_series[20], read_mrc(tilt_image_files[0]))
 
 
-@pytest.mark.filterwarnings('ignore::DeprecationWarning')
 def test_tiltstack_relion(
     motioncor_output, tilt_series_mdoc_file, tmpdir, tilt_image_files
 ):
