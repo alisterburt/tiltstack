@@ -47,13 +47,14 @@ def tiltstack(
 @cli.command()
 def tiltstack_relion(
     micrographs_star_file: Path = typer.Option(..., prompt=True),
-    mdoc_files: List[Path] = typer.Option(..., prompt=True),
+    mdoc_file_pattern: str = typer.Option(..., prompt=True),
     output_directory: Path = typer.Option(..., prompt=True),
     dose_per_tilt: Optional[float] = None,
     cluster_specification: Optional[Path] = None,
 ):
     star = starfile.read(micrographs_star_file)
     tilt_image_files = star["micrographs"]["rlnMicrographName"]
+    mdoc_files = list(Path().glob(mdoc_file_pattern))
     tiltstack(
         tilt_image_files=tilt_image_files,
         mdoc_files=mdoc_files,
