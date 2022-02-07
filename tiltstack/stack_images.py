@@ -24,6 +24,8 @@ def stack_image_files_mmap(image_files: List[PathLike], output_filename: PathLik
     mrc = mrcfile.new_mmap(output_filename, shape=stack_shape, mrc_mode=12)
     for idx, image_file in enumerate(image_files):
         mrc.data[idx] = read_mrc(image_file)
+    mrc.reset_header_stats()
+    mrc.update_header_from_data()
     pixel_size = get_pixel_size(image_files[0])
     mrc.voxel_size = (pixel_size, pixel_size, 0)
     mrc.close()
