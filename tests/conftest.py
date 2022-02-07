@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from tiltstack.tiltstack import prepare_mdoc_dataframe
+from tiltstack.mdoc import prepare_mdoc_dataframe
 
 TEST_DATA = Path(__file__).parent / "test_data"
 

@@ -2,6 +2,7 @@ from os import PathLike
 from pathlib import Path
 from typing import List, Optional
 
+import mdocfile
 import numpy as np
 import pandas as pd
 from thefuzz import process
@@ -46,3 +47,16 @@ def add_pre_exposure_dose(
     else:
         mdoc_df["pre_exposure_dose"] = np.cumsum(mdoc_df["exposure_dose"].to_numpy())
     return mdoc_df
+
+
+def prepare_mdoc_dataframe(
+    mdoc_file: PathLike,
+    tilt_image_files: List[PathLike],
+    dose_per_tilt: Optional[float] = None
+) -> pd.DataFrame:
+    df = mdocfile.read(mdoc_file, camel_to_snake=True)
+    df = df.sort_values(by="date_time", ascending=True)
+    df = add_pre_exposure_dose(mdoc_df=df, dose_per_tilt=dose_per_tilt)
+    df = df.sort_values(by="tilt_angle", ascending=True)
+    df = match_tilt_image_filenames(tilt_image_files, mdoc_df=df)
+    return df

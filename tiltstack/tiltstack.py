@@ -1,18 +1,19 @@
 from os import PathLike
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Union
 
-import mdocfile
 import numpy as np
 import pandas as pd
 import starfile
 
-import dask
+import typer
 
 from .dask import create_cluster
-from .mdoc import add_pre_exposure_dose, match_tilt_image_filenames
+from .mdoc import prepare_mdoc_dataframe
 from .stack_images import stack_image_files, stack_image_files_mmap
 from .utils import basename, write_rawtlt, write_metadata
+
+cli = typer.Typer()
 
 
 def tiltstack(
@@ -43,12 +44,13 @@ def tiltstack(
     return
 
 
+@cli.command()
 def tiltstack_relion(
-    micrographs_star_file: PathLike,
-    mdoc_files: List[PathLike],
-    output_directory: PathLike,
+    micrographs_star_file: Path = typer.Option(..., prompt=True),
+    mdoc_files: List[Path] = typer.Option(..., prompt=True),
+    output_directory: Path = typer.Option(..., prompt=True),
     dose_per_tilt: Optional[float] = None,
-    cluster_specification: Optional[PathLike] = None,
+    cluster_specification: Optional[Path] = None,
 ):
     star = starfile.read(micrographs_star_file)
     tilt_image_files = star["micrographs"]["rlnMicrographName"]
@@ -57,6 +59,7 @@ def tiltstack_relion(
         mdoc_files=mdoc_files,
         ts_directory=output_directory,
         dose_per_tilt=dose_per_tilt,
+        cluster_specification=cluster_specification
     )
 
 
@@ -98,14 +101,3 @@ def stack_tilt_series(
         )
 
 
-def prepare_mdoc_dataframe(
-    mdoc_file: PathLike,
-    tilt_image_files: List[PathLike],
-    dose_per_tilt: Optional[float] = None
-) -> pd.DataFrame:
-    df = mdocfile.read(mdoc_file, camel_to_snake=True)
-    df = df.sort_values(by="date_time", ascending=True)
-    df = add_pre_exposure_dose(mdoc_df=df, dose_per_tilt=dose_per_tilt)
-    df = df.sort_values(by="tilt_angle", ascending=True)
-    df = match_tilt_image_filenames(tilt_image_files, mdoc_df=df)
-    return df
