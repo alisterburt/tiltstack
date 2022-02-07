@@ -4,7 +4,6 @@ import numpy as np
 
 from tiltstack.io_utils import read_mrc
 from tiltstack.tiltstack import stack_tilt_series, tiltstack_relion
-from tiltstack.utils import basename
 
 
 def test_stack(mdoc_df, tilt_image_files):

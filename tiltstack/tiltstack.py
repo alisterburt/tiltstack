@@ -55,6 +55,7 @@ def tiltstack_relion(
     star = starfile.read(micrographs_star_file)
     tilt_image_files = star["micrographs"]["rlnMicrographName"]
     mdoc_files = list(Path().glob(mdoc_file_pattern))
+    print(mdoc_files)
     tiltstack(
         tilt_image_files=tilt_image_files,
         mdoc_files=mdoc_files,
