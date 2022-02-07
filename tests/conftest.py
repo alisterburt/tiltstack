@@ -8,6 +8,11 @@ TEST_DATA = Path(__file__).parent / "test_data"
 
 
 @pytest.fixture
+def test_data_directory():
+    return TEST_DATA
+
+
+@pytest.fixture
 def tilt_series_mdoc_file():
     return TEST_DATA / "mdoc" / "TS_01.mrc.mdoc"
 

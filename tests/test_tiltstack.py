@@ -17,15 +17,17 @@ def test_stack(mdoc_df, tilt_image_files):
 
 
 def test_tiltstack_relion(
-    motioncor_output, tilt_series_mdoc_file, tmpdir, tilt_image_files
+    motioncor_output, test_data_directory, tmpdir, tilt_image_files
 ):
+    relative_path = test_data_directory.relative_to(Path().absolute())
+    mdoc_file_pattern = f"{relative_path}/mdoc/*.mdoc"
     tiltstack_relion(
         micrographs_star_file=motioncor_output,
-        mdoc_files=[tilt_series_mdoc_file],
+        mdoc_file_pattern=mdoc_file_pattern,
         output_directory=tmpdir,
         dose_per_tilt=3,
     )
-    tilt_series_basename = basename(tilt_series_mdoc_file)
+    tilt_series_basename = 'TS_01'
     output_file = Path(tmpdir) / "tilt_series" / tilt_series_basename / f"{tilt_series_basename}.mrc"
     assert output_file.exists()
     tilt_series = read_mrc(output_file)
